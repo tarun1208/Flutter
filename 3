@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(
+  debugShowCheckedModeBanner: false,
+  home: HomeScreen(),
+));
+
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String selected = "Home";
+  final pages = {
+    "Home": "Welcome to the Home Page!",
+    "About": "This is the About Page.",
+    "Services": "Our Services are listed here.",
+    "Contact": "Contact us at example@flutter.dev",
+    "Feedback": "Give us your Feedback!",
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final small = MediaQuery.of(context).size.width < 600;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Design", style: TextStyle(fontSize: 28)),
+        backgroundColor: Colors.green[800],
+        actions: small
+            ? [PopupMenuButton(
+                onSelected: (v) => setState(() => selected = v),
+                itemBuilder: (_) => pages.keys
+                    .map((t) => PopupMenuItem(value: t, child: Text(t)))
+                    .toList(),
+              )]
+            : pages.keys.map((t) => TextButton(
+                onPressed: () => setState(() => selected = t),
+                child: Text(t,
+                    style: TextStyle(
+                        color: selected == t ? Colors.white : Colors.white70,
+                        fontWeight: selected == t ? FontWeight.bold : null)),
+              )).toList(),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          width: small ? double.infinity : MediaQuery.of(context).size.width * 0.7,
+          color: Colors.white.withOpacity(0.85),
+          child: Text(pages[selected]!, textAlign: TextAlign.center, style: const TextStyle(fontSize: 24)),
+        ),
+      ),
+    );
+  }
+}
