@@ -1,18 +1,91 @@
-import 'package:counter_app/counter.dart';
-import 'package:test/test.dart';
-void main(
-group('Test start, increment, decrement', 0 {
-test'value should start at O', 0 {
-expect(Counter(.value, 0);
-3);
-test' value should be incremented', 0 {
-final counter = Counter;
-counter.incrementO;
-expect(counter. value, 1);
-3);
-test'value should be decremented', 0 {
-final counter = CounterO;
-counter.decrement(;
-expect(counter.value, -1);
-3);
-3);
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AnimationDemo(),
+    );
+  }
+}
+
+class AnimationDemo extends StatefulWidget {
+  @override
+  State<AnimationDemo> createState() => _AnimationDemoState();
+}
+
+class _AnimationDemoState extends State<AnimationDemo>
+    with SingleTickerProviderStateMixin {
+  bool fadeVisible = false;
+  late AnimationController controller;
+  late Animation<Offset> slide;
+
+  @override
+  void initState() {
+    super.initState();
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    slide = Tween<Offset>(begin: Offset(0, 1), end: Offset(0, 0))
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Fade & Slide Animation")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Fade Animation
+            ElevatedButton(
+              onPressed: () => setState(() => fadeVisible = !fadeVisible),
+              child: Text(fadeVisible ? "Hide Fade Box" : "Show Fade Box"),
+            ),
+            AnimatedOpacity(
+              opacity: fadeVisible ? 1.0 : 0.0,
+              duration: Duration(seconds: 1),
+              child: Container(
+                width: 150,
+                height: 100,
+                color: Colors.greenAccent,
+                child: Center(child: Text("Fade Box")),
+              ),
+            ),
+            SizedBox(height: 40),
+
+            // Slide Animation
+            ElevatedButton(
+              onPressed: () {
+                if (controller.status == AnimationStatus.completed) {
+                  controller.reverse();
+                } else {
+                  controller.forward();
+                }
+              },
+              child: Text("Toggle Slide Box"),
+            ),
+            SlideTransition(
+              position: slide,
+              child: Container(
+                width: 150,
+                height: 100,
+                color: Colors.orangeAccent,
+                child: Center(child: Text("Slide Box")),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
